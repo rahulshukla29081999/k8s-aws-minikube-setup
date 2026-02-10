@@ -1,33 +1,34 @@
-🚀 Kubernetes Setup on AWS EC2 using Minikube (Ubuntu 24.04)
+🚀 Kubernetes on AWS EC2 using Minikube
 
-A hands-on guide to running Kubernetes locally on an AWS EC2 instance using Minikube & Docker
-Built with ❤️ on Ubuntu 24.04 | t2.large | 8 GB RAM
+Run a single-node Kubernetes cluster on an AWS EC2 instance using Minikube + Docker.
+Built for learning, testing, and demos without the overhead of EKS.
 
-📌 Project Overview
+OS: Ubuntu 24.04 LTS
+Instance: t2.large (8 GB RAM)
+Kubernetes: Minikube (Docker driver)
 
-This repository demonstrates how to set up a single-node Kubernetes cluster on an AWS EC2 instance using:
+📌 Overview
 
-🟢 Ubuntu 24.04 LTS
+This project demonstrates how to set up Kubernetes on an AWS EC2 instance using:
 
-🐳 Docker as container runtime
+Ubuntu 24.04 LTS
 
-☸️ Minikube for Kubernetes
+Docker as the container runtime
 
-🎯 kubectl via Snap
+Minikube for Kubernetes
 
-This setup is perfect for learning, testing, and demos — especially when you don’t want to spin up a full EKS cluster.
+kubectl (Snap-based installation)
+
+Ideal when you want hands-on Kubernetes experience without provisioning a full-managed cluster.
 
 🧰 Prerequisites
-
-Before starting, make sure you have:
-
-AWS Side
+AWS
 
 EC2 Instance: t2.large
 
 OS: Ubuntu 24.04 LTS
 
-Storage: Minimum 10 GB
+Storage: 10 GB minimum
 
 Security Group:
 
@@ -35,84 +36,56 @@ Port 22 open (SSH)
 
 Local Machine
 
-SSH client (PowerShell / Terminal)
+SSH client (Terminal / PowerShell)
 
-.pem key file for EC2 access
+EC2 .pem key
 
-🔐 Step 1: Connect to EC2 Instance
+🔐 Connect to EC2
+ssh -i k8s.pem ubuntu@<EC2_PUBLIC_IP>
 
-From your local machine:
-
-ssh -i "k8s.pem" ubuntu@<EC2_PUBLIC_IP>
-
-
-✔ This securely connects you to your Ubuntu EC2 instance.
-
-🔄 Step 2: Update the System
+🔄 System Update
 sudo apt update && sudo apt upgrade -y
 
-Why?
 
-Updates system packages
+Keeps packages secure and avoids dependency issues later.
 
-Applies security patches
-
-Prevents dependency issues later
-
-🐳 Step 3: Install Docker
+🐳 Install Docker
 sudo apt install -y docker.io
-
-
-Enable and start Docker:
-
 sudo systemctl enable docker
 sudo systemctl start docker
 
 
-Add current user to Docker group:
+Add user to Docker group:
 
 sudo usermod -aG docker $USER
 exit
 
 
-🔁 Reconnect via SSH so group changes take effect.
+Reconnect via SSH after this step.
 
-Why Docker?
+Verify:
 
-Minikube uses Docker to run Kubernetes components as containers.
-
-🧪 Step 4: Verify Docker Installation
 docker --version
 
-
-✔ Confirms Docker is installed correctly.
-
-📦 Step 5: Install Required Packages
+📦 Install Required Packages
 sudo apt install -y apt-transport-https ca-certificates curl
 
-Why?
 
-These packages allow secure downloads over HTTPS.
+Required for secure binary downloads.
 
-☸️ Step 6: Install Minikube
-
-Download Minikube binary:
-
+☸️ Install Minikube
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-
-
-Install it:
-
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
 
-Verify installation:
+Verify:
 
 minikube version
 
-🎯 Step 7: Install kubectl (Recommended Way)
+🎯 Install kubectl (Recommended)
 
-Instead of broken apt repos, we use Snap 👇
+Ubuntu 24.04 breaks old Kubernetes apt repos.
+Use Snap (official & stable):
 
 sudo snap install kubectl --classic
 
@@ -121,43 +94,29 @@ Verify:
 
 kubectl version --client
 
-Why Snap?
+⚠️ Common Issue (Avoid This)
 
-Official
-
-Stable
-
-No repo errors on Ubuntu 24.04
-
-⚠️ Common Issue Explained (Important!)
-
-❌ kubernetes-xenial repository is deprecated
-Trying to use it results in:
+❌ Using kubernetes-xenial repo results in:
 
 404 Not Found
 does not have a Release file
 
 
-✅ Solution:
-Remove the repo and use Snap-based kubectl (done above).
+✅ Solution: Use Snap-based kubectl (already done).
 
-🚀 Step 8: Start Kubernetes Cluster with Minikube
+🚀 Start Kubernetes Cluster
 minikube start --driver=docker
 
-What happens here?
 
-Minikube pulls Kubernetes images
+Minikube will:
 
-Creates a Docker-based control plane
+Pull Kubernetes images
 
-Configures networking & storage
+Create Docker-based control plane
 
-✔ Kubernetes cluster starts successfully 🎉
+Configure networking & storage
 
-🧠 Step 9: Verify Kubernetes Cluster
-
-Check node status:
-
+🧠 Verify Cluster
 kubectl get nodes
 
 
@@ -167,9 +126,9 @@ NAME       STATUS   ROLES           VERSION
 minikube   Ready    control-plane   v1.35.0
 
 
-🎉 Your Kubernetes cluster is LIVE!
+🎉 Kubernetes is up and running!
 
-🏗 Architecture Overview
+🏗 Architecture
 Local Machine
      |
      | SSH
@@ -185,7 +144,7 @@ Single-node Kubernetes Cluster
 
 🎯 Use Cases
 
-Kubernetes learning & practice
+Kubernetes learning & hands-on practice
 
 CI/CD pipeline testing
 
@@ -193,7 +152,9 @@ Helm chart validation
 
 Pod, Service & Deployment experiments
 
-🧹 Cleanup (Optional)
+Debugging containerized workloads
+
+🧹 Cleanup
 
 Stop cluster:
 
@@ -204,5 +165,8 @@ Delete cluster:
 
 minikube delete
 
+👨‍💻 Author
 
-Author:- Rahul Shukla DevOps Engineer
+Rahul Shukla
+DevOps Engineer
+AWS • Docker • Kubernetes • CI/CD
